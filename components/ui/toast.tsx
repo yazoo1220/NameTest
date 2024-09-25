@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface ToastProps {
+export interface ToastProps {
   title?: string;
   description: string;
   variant: 'success' | 'error' | 'info' | 'destructive';
