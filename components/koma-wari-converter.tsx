@@ -116,9 +116,7 @@ export function KomaWariConverterComponent() {
         });
       });
       setChartData(newChartData);
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      console.error(errorMessage); // エラーメッセージをコンソールに出力
+    } catch {
       if (jsonInput.trim() !== '') {
         setError('無効なJSON入力です。JSONを確認して再試行してください。');
       }
@@ -126,6 +124,8 @@ export function KomaWariConverterComponent() {
       setChartData([]);
     }
   }, [jsonInput]);
+  
+  
 
   const handleDifyRequest = async (
     apiKey: string,
