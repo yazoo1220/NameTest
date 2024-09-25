@@ -102,7 +102,7 @@ export function KomaWariConverterComponent() {
     try {
       const jsonData: Page[] = JSON.parse(jsonInput);
       setPreview(jsonData);
-      setError('');
+      setError(''); // エラーメッセージをクリア
   
       const newChartData: ChartData[] = [];
       jsonData.forEach((page) => {
@@ -111,12 +111,14 @@ export function KomaWariConverterComponent() {
             name: `P${page.page}-${panelIndex + 1}`,
             emotion: panel.Emotion,
             content: panel.Content,
-            attribute: panel.Attribute
+            attribute: panel.Attribute,
           });
         });
       });
       setChartData(newChartData);
-    } catch {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      console.error(errorMessage); // エラーメッセージをコンソールに出力
       if (jsonInput.trim() !== '') {
         setError('無効なJSON入力です。JSONを確認して再試行してください。');
       }
