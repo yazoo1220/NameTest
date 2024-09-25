@@ -116,10 +116,9 @@ export function KomaWariConverterComponent() {
         });
       });
       setChartData(newChartData);
-    } catch (error: unknown) {  // error の型を unknown にする
-      if (error instanceof Error) {
-        console.error(error.message);  // エラーメッセージを参照して出力
-      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);  // エラーメッセージを参照して出力
       if (jsonInput.trim() !== '') {
         setError('無効なJSON入力です。JSONを確認して再試行してください。');
       }
