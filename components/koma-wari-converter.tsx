@@ -66,7 +66,7 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>)
 
 export function KomaWariConverterComponent() {
   const [jsonInput, setJsonInput] = useState('')
-  const [error, setError] = useState('')
+  // const [error, setError] = useState('')
   const [preview, setPreview] = useState<Page[]>([])
   const [chartData, setChartData] = useState<ChartData[]>([])
   const [width, setWidth] = useState(960)
@@ -102,7 +102,7 @@ export function KomaWariConverterComponent() {
     try {
       const jsonData: Page[] = JSON.parse(jsonInput);
       setPreview(jsonData);
-      setError(''); // エラーメッセージをクリア
+      // setError(''); // エラーメッセージをクリア
   
       const newChartData: ChartData[] = [];
       jsonData.forEach((page) => {
@@ -116,9 +116,9 @@ export function KomaWariConverterComponent() {
         });
       });
       setChartData(newChartData);
-    } catch (_error) {  // 'error' を '_error' に変更して無視する
+    } catch {
       if (jsonInput.trim() !== '') {
-        setError('無効なJSON入力です。JSONを確認して再試行してください。');
+        // setError('無効なJSON入力です。JSONを確認して再試行してください。');
       }
       setPreview([]);
       setChartData([]);
@@ -162,8 +162,8 @@ export function KomaWariConverterComponent() {
       } else {
         throw new Error(`Error ${response.status}: ${responseData.message || response.statusText}`);
       }
-    }catch (error: unknown) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    } catch {
+        const errorMessage = "" //error instanceof Error ? error.message : 'Unknown error occurred';
         setApiError(errorMessage);
         toast({
           title: "APIリクエストエラー",
