@@ -37,8 +37,8 @@ interface ChartData {
   attribute: string
 }
 
-interface CustomTooltipProps extends TooltipProps<number, string> {
-}
+// interface CustomTooltipProps extends TooltipProps<number, string> {
+// }
 
 const attributeColors = {
   'ヒキ': '#FF6B6B',
@@ -50,7 +50,7 @@ const attributeColors = {
 }
 
 
-const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white p-4 border rounded shadow">
@@ -100,11 +100,11 @@ export function KomaWariConverterComponent() {
 
   useEffect(() => {
     try {
-      const jsonData: Page[] = JSON.parse(jsonInput)
-      setPreview(jsonData)
-      setError('')
-
-      const newChartData: ChartData[] = []
+      const jsonData: Page[] = JSON.parse(jsonInput);
+      setPreview(jsonData);
+      setError('');
+  
+      const newChartData: ChartData[] = [];
       jsonData.forEach((page) => {
         page.panels.forEach((panel, panelIndex) => {
           newChartData.push({
@@ -112,60 +112,66 @@ export function KomaWariConverterComponent() {
             emotion: panel.Emotion,
             content: panel.Content,
             attribute: panel.Attribute
-          })
-        })
-      })
-      setChartData(newChartData)
+          });
+        });
+      });
+      setChartData(newChartData);
     } catch {
       if (jsonInput.trim() !== '') {
-        setError('無効なJSON入力です。JSONを確認して再試行してください。')
+        setError('無効なJSON入力です。JSONを確認して再試行してください。');
       }
-      setPreview([])
-      setChartData([])
+      setPreview([]);
+      setChartData([]);
     }
-  }, [jsonInput])
+  }, [jsonInput]);
 
-  const handleDifyRequest = async (apiKey: string, inputs: Record<string, any>, setOutput: (output: string) => void) => {
-    const url = "https://api.dify.ai/v1/completion-messages"
+  const handleDifyRequest = async (
+    apiKey: string,
+    inputs: Record<string, unknown>,
+    setOutput: (output: string) => void
+  ) => {
+    const url = "https://api.dify.ai/v1/completion-messages";
     const headers = {
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json"
-    }
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    };
     const data = {
       inputs,
-      "response_mode": "blocking",
-      "user": "user-1"
-    }
-
+      response_mode: "blocking",
+      user: "user-1",
+    };
+  
     try {
       const response = await fetch(url, {
-        method: 'POST',
+        method: "POST",
         headers: headers,
-        body: JSON.stringify(data)
-      })
-
-      const responseData = await response.json()
-
+        body: JSON.stringify(data),
+      });
+  
+      const responseData = await response.json();
+  
       if (response.ok) {
-        setOutput(responseData.answer)
-        setApiError(null)
+        setOutput(responseData.answer);
+        setApiError(null);
         toast({
           title: "生成完了",
           description: "Difyからの応答を受信しました。",
-        })
+        });
       } else {
-        throw new Error(`Error ${response.status}: ${responseData.message || response.statusText}`)
+        throw new Error(`Error ${response.status}: ${responseData.message || response.statusText}`);
       }
-    } catch (error: any) {
-      const errorMessage = error.message || 'Unknown error occurred'
-      setApiError(errorMessage);
-      toast({
-        title: "APIリクエストエラー",
-        description: errorMessage,
-        variant: "destructive",
-      })
-    }
-  }
+    }catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        setApiError(errorMessage);
+        toast({
+          title: "APIリクエストエラー",
+          description: errorMessage,
+          variant: "destructive",
+        });
+      }
+      
+  };
+  
 
   const handleStoryAdaptation = () => {
     handleDifyRequest(storyAdaptationApiKey, { original, theme, world, instruction }, setStoryAdaptationOutput)
