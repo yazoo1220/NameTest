@@ -1,16 +1,6 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
-import { Settings, ArrowRight } from 'lucide-react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useToast } from "@/components/ui/use-toast"
 
 interface Panel {
@@ -70,34 +60,7 @@ export function KomaWariConverterComponent() {
   const [error, setError] = useState('')
   const [preview, setPreview] = useState<Page[]>([])
   const [chartData, setChartData] = useState<ChartData[]>([])
-  const [width, setWidth] = useState(960)
-  const [height, setHeight] = useState(1280)
-  const [storyAdaptationApiKey, setStoryAdaptationApiKey] = useState('')
-  const [punchlineCreationApiKey, setPunchlineCreationApiKey] = useState('')
-  const [comicStripApiKey, setComicStripApiKey] = useState('')
   const { toast } = useToast()
-
-  // Story Adaptation state
-  const [original, setOriginal] = useState('')
-  const [theme, setTheme] = useState('')
-  const [world, setWorld] = useState('')
-  const [instruction, setInstruction] = useState('')
-  const [storyAdaptationOutput, setStoryAdaptationOutput] = useState('')
-
-  // Punchline Creation state
-  const [character, setCharacter] = useState('')
-  const [setup, setSetup] = useState('')
-  const [reaction, setReaction] = useState('')
-  const [direction, setDirection] = useState('')
-  const [numOfResults, setNumOfResults] = useState(1)
-  const [punchlineCreationOutput, setPunchlineCreationOutput] = useState('')
-
-  // Comic Strip Creation state
-  const [scenario, setScenario] = useState('')
-  const [comicStripOutput, setComicStripOutput] = useState('')
-
-  // API Error state
-  const [apiError, setApiError] = useState<string | null>(null)
 
   useEffect(() => {
     try {
@@ -126,7 +89,7 @@ export function KomaWariConverterComponent() {
     }
   }, [jsonInput])
 
-  const handleDifyRequest = async (apiKey: string, inputs: Record<string, any>, setOutput: (output: string) => void) => {
+  const handleDifyRequest = async (apiKey: string, inputs: Record<string, unknown>, setOutput: (output: string) => void) => {
     const url = "https://api.dify.ai/v1/completion-messages"
     const headers = {
       "Authorization": `Bearer ${apiKey}`,
@@ -149,7 +112,6 @@ export function KomaWariConverterComponent() {
 
       if (response.ok) {
         setOutput(responseData.answer)
-        setApiError(null)
         toast({
           title: "生成完了",
           description: "Difyからの応答を受信しました。",
@@ -157,31 +119,14 @@ export function KomaWariConverterComponent() {
       } else {
         throw new Error(`Error ${response.status}: ${responseData.message || response.statusText}`)
       }
-    } catch (error: any) {
-      const errorMessage = error.message || 'Unknown error occurred'
-      setApiError(errorMessage);
+    } catch (error: unknown) {
+      const errorMessage = (error as Error).message || 'Unknown error occurred'
       toast({
         title: "APIリクエストエラー",
         description: errorMessage,
-        variant: "destructive",  // これでエラーは解消されます
+        variant: "destructive",
       });
     }
-  }
-
-  const handleStoryAdaptation = () => {
-    handleDifyRequest(storyAdaptationApiKey, { original, theme, world, instruction }, setStoryAdaptationOutput)
-  }
-
-  const handlePunchlineCreation = () => {
-    handleDifyRequest(punchlineCreationApiKey, { character, setup, reaction, direction, num_of_results: numOfResults }, setPunchlineCreationOutput)
-  }
-
-  const handleComicStripCreation = () => {
-    handleDifyRequest(comicStripApiKey, { scenario }, setComicStripOutput)
-  }
-
-  const pasteToConverter = (output: string) => {
-    setJsonInput(output)
   }
 
   return (
