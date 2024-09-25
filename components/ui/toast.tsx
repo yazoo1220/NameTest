@@ -1,30 +1,35 @@
-// /components/ui/toast.tsx
 import React from 'react';
 
 interface ToastProps {
-    message: string;
-    variant: 'success' | 'error' | 'info';
+  title?: string;
+  description: string;
+  variant: 'success' | 'error' | 'info' | 'destructive';
+}
+
+export const Toast = ({ title, description, variant }: ToastProps) => {
+  let backgroundColor = '';
+  switch (variant) {
+    case 'success':
+      backgroundColor = 'bg-green-500';
+      break;
+    case 'error':
+      backgroundColor = 'bg-red-500';
+      break;
+    case 'info':
+      backgroundColor = 'bg-blue-500';
+      break;
+    case 'destructive':
+      backgroundColor = 'bg-red-700';  // より破壊的な印象を与える色
+      break;
+    default:
+      backgroundColor = 'bg-blue-500';
   }
-  
-  export const Toast = ({ message, variant }: ToastProps) => {
-    let backgroundColor = '';
-    switch (variant) {
-      case 'success':
-        backgroundColor = 'bg-green-500';
-        break;
-      case 'error':
-        backgroundColor = 'bg-red-500';
-        break;
-      case 'info':
-      default:
-        backgroundColor = 'bg-blue-500';
-        break;
-    }
-  
-    return (
-      <div className={`p-2 text-white rounded shadow-lg ${backgroundColor}`}>
-        {message}
-      </div>
-    );
-  };
-  
+
+  return (
+    <div className={`p-4 text-white rounded shadow-lg ${backgroundColor}`}>
+      {title && <strong>{title}</strong>}
+      <p>{description}</p>
+    </div>
+  );
+};
+

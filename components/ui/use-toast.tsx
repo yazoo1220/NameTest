@@ -1,10 +1,14 @@
-// /components/ui/use-toast.tsx
-import React from 'react';
-import { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { Toast } from './toast';  // Toastコンポーネントがある場合、インポート
 
+interface ToastMessage {
+  title?: string;
+  description: string;
+  variant?: 'success' | 'error' | 'info' | 'destructive';
+}
+
 interface ToastContextType {
-  toast: (message: string, variant?: 'success' | 'error' | 'info') => void;
+  toast: (message: ToastMessage) => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -18,10 +22,10 @@ export const useToast = () => {
 };
 
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
-  const [toasts, setToasts] = useState<{ message: string; variant: string }[]>([]);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  const toast = (message: string, variant: 'success' | 'error' | 'info' = 'info') => {
-    setToasts([...toasts, { message, variant }]);
+  const toast = (message: ToastMessage) => {
+    setToasts([...toasts, message]);
 
     setTimeout(() => {
       setToasts((toasts) => toasts.slice(1));  // 自動的にトーストを消す
@@ -33,7 +37,12 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
       {children}
       <div className="fixed bottom-0 right-0 p-4">
         {toasts.map((toast, index) => (
-          <Toast key={index} message={toast.message} variant={toast.variant} />
+          <Toast
+            key={index}
+            title={toast.title}
+            description={toast.description}
+            variant={toast.variant || 'info'}
+          />
         ))}
       </div>
     </ToastContext.Provider>
