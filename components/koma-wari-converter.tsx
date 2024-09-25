@@ -116,16 +116,15 @@ export function KomaWariConverterComponent() {
         });
       });
       setChartData(newChartData);
-    } catch {
+    } catch (error) {  // 'error' を参照
       if (jsonInput.trim() !== '') {
         setError('無効なJSON入力です。JSONを確認して再試行してください。');
+        console.error(error);  // エラーメッセージをコンソールに出力
       }
       setPreview([]);
       setChartData([]);
     }
   }, [jsonInput]);
-  
-  
 
   const handleDifyRequest = async (
     apiKey: string,
