@@ -1,12 +1,20 @@
-// components/ui/toast.tsx
 "use client";
 
 import React, { createContext, useContext, useState } from 'react';
 
-const ToastContext = createContext<any>(null);
+// Define the ToastContext type
+interface ToastContextType {
+  addToast: (toast: ToastProps) => void;
+  removeToast: (index: number) => void;
+  toasts: ToastProps[];
+}
 
+// Use the correct type for the context
+const ToastContext = createContext<ToastContextType | null>(null);
+
+// Create the ToastProvider component
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
-  const [toasts, setToasts] = useState<any[]>([]);
+  const [toasts, setToasts] = useState<ToastProps[]>([]);
 
   const addToast = (toast: ToastProps) => {
     setToasts((prevToasts) => [...prevToasts, toast]);
@@ -28,6 +36,7 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+// Hook to use the toast functionality
 export const useToast = () => {
   const context = useContext(ToastContext);
   if (!context) {
@@ -36,12 +45,14 @@ export const useToast = () => {
   return context;
 };
 
+// Define the ToastProps type
 export interface ToastProps {
   title?: string;
   description: string;
   variant: 'success' | 'error' | 'info' | 'destructive';
 }
 
+// Toast component
 export const Toast = ({ title, description, variant }: ToastProps) => {
   let backgroundColor = '';
   switch (variant) {
