@@ -1,4 +1,40 @@
-import React from 'react';
+import React, { createContext, useContext, useState } from 'react';
+
+// Create the context
+const ToastContext = createContext<any>(null);
+
+// Create the ToastProvider component
+export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
+  const [toasts, setToasts] = useState<any[]>([]);
+
+  const addToast = (toast: ToastProps) => {
+    setToasts((prevToasts) => [...prevToasts, toast]);
+  };
+
+  const removeToast = (index: number) => {
+    setToasts((prevToasts) => prevToasts.filter((_, i) => i !== index));
+  };
+
+  return (
+    <ToastContext.Provider value={{ addToast, removeToast, toasts }}>
+      {children}
+      <div className="fixed bottom-0 right-0 p-4 space-y-2">
+        {toasts.map((toast, index) => (
+          <Toast key={index} {...toast} />
+        ))}
+      </div>
+    </ToastContext.Provider>
+  );
+};
+
+// Hook to use the toast functionality
+export const useToast = () => {
+  const context = useContext(ToastContext);
+  if (!context) {
+    throw new Error('useToast must be used within a ToastProvider');
+  }
+  return context;
+};
 
 export interface ToastProps {
   title?: string;
