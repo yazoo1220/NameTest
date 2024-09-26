@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useContext, useState } from 'react';
 
 // Create the context
@@ -68,4 +70,3 @@ export const Toast = ({ title, description, variant }: ToastProps) => {
     </div>
   );
 };
-
