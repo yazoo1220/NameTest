@@ -2,12 +2,19 @@
 
 import React, { createContext, useContext, useState } from 'react';
 
-// Create the context
-const ToastContext = createContext<any>(null);
+// Define the ToastContext type
+interface ToastContextType {
+  addToast: (toast: ToastProps) => void;
+  removeToast: (index: number) => void;
+  toasts: ToastProps[];
+}
+
+// Create the context with the defined type
+const ToastContext = createContext<ToastContextType | null>(null);
 
 // Create the ToastProvider component
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
-  const [toasts, setToasts] = useState<any[]>([]);
+  const [toasts, setToasts] = useState<ToastProps[]>([]);
 
   const addToast = (toast: ToastProps) => {
     setToasts((prevToasts) => [...prevToasts, toast]);
