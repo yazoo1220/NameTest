@@ -1,20 +1,12 @@
+// components/ui/toast.tsx
 "use client";
 
 import React, { createContext, useContext, useState } from 'react';
 
-// Define the ToastContext type
-interface ToastContextType {
-  addToast: (toast: ToastProps) => void;
-  removeToast: (index: number) => void;
-  toasts: ToastProps[];
-}
+const ToastContext = createContext<any>(null);
 
-// Create the context with the defined type
-const ToastContext = createContext<ToastContextType | null>(null);
-
-// Create the ToastProvider component
 export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
-  const [toasts, setToasts] = useState<ToastProps[]>([]);
+  const [toasts, setToasts] = useState<any[]>([]);
 
   const addToast = (toast: ToastProps) => {
     setToasts((prevToasts) => [...prevToasts, toast]);
@@ -36,7 +28,6 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// Hook to use the toast functionality
 export const useToast = () => {
   const context = useContext(ToastContext);
   if (!context) {
@@ -64,7 +55,7 @@ export const Toast = ({ title, description, variant }: ToastProps) => {
       backgroundColor = 'bg-blue-500';
       break;
     case 'destructive':
-      backgroundColor = 'bg-red-700';  // より破壊的な印象を与える色
+      backgroundColor = 'bg-red-700';
       break;
     default:
       backgroundColor = 'bg-blue-500';
