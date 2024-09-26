@@ -37,9 +37,6 @@ interface ChartData {
   attribute: string
 }
 
-// interface CustomTooltipProps extends TooltipProps<number, string> {
-// }
-
 const attributeColors = {
   'ヒキ': '#FF6B6B',
   'メクリ': '#4ECDC4',
@@ -48,7 +45,6 @@ const attributeColors = {
   'ウケ': '#5D5D5D',
   '': '#F0F0F0',
 }
-
 
 const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
   if (active && payload && payload.length) {
@@ -66,7 +62,6 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>)
 
 export function KomaWariConverterComponent() {
   const [jsonInput, setJsonInput] = useState('')
-  // const [error, setError] = useState('')
   const [preview, setPreview] = useState<Page[]>([])
   const [chartData, setChartData] = useState<ChartData[]>([])
   const [width, setWidth] = useState(960)
@@ -102,8 +97,7 @@ export function KomaWariConverterComponent() {
     try {
       const jsonData: Page[] = JSON.parse(jsonInput);
       setPreview(jsonData);
-      // setError(''); // エラーメッセージをクリア
-  
+
       const newChartData: ChartData[] = [];
       jsonData.forEach((page) => {
         page.panels.forEach((panel, panelIndex) => {
@@ -118,14 +112,11 @@ export function KomaWariConverterComponent() {
       setChartData(newChartData);
     } catch {
       if (jsonInput.trim() !== '') {
-        // setError('無効なJSON入力です。JSONを確認して再試行してください。');
+        setPreview([]);
+        setChartData([]);
       }
-      setPreview([]);
-      setChartData([]);
     }
   }, [jsonInput]);
-  
-  
 
   const handleDifyRequest = async (
     apiKey: string,
@@ -163,7 +154,7 @@ export function KomaWariConverterComponent() {
         throw new Error(`Error ${response.status}: ${responseData.message || response.statusText}`);
       }
     } catch {
-        const errorMessage = "" //error instanceof Error ? error.message : 'Unknown error occurred';
+        const errorMessage = "APIリクエストに失敗しました";
         setApiError(errorMessage);
         toast({
           title: "APIリクエストエラー",
@@ -171,9 +162,7 @@ export function KomaWariConverterComponent() {
           variant: "destructive",
         });
       }
-      
   };
-  
 
   const handleStoryAdaptation = () => {
     handleDifyRequest(storyAdaptationApiKey, { original, theme, world, instruction }, setStoryAdaptationOutput)
